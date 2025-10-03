@@ -4,3 +4,4 @@ metadata:
   name: quakewatch-config
 data:
   APP_TITLE: "QuakeWatch"
+  API_URL: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"
