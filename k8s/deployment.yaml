@@ -14,9 +14,14 @@ spec:
     spec:
       containers:
         - name: quakewatch
-          image: liore1/quakewatch:latest
+          image: liore007/quakewatch:latest
           ports:
             - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: quakewatch-config
+            - secretRef:
+                name: quakewatch-secret
           resources:
             requests:
               cpu: "100m"
