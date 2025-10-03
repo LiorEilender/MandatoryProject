@@ -1,4 +1,4 @@
-﻿# QuakeWatch
+# QuakeWatch
 
 ## Run locally (venv)
 python -m venv venv
@@ -22,5 +22,5 @@ minikube service quakewatch-svc --url
 ## Image
 - Docker Hub: docker.io/liore007/quakewatch (tags: latest, <commit-sha>)
 
-## Health
-GET /healthz
+## Service Health
+GET /Service Healthz
