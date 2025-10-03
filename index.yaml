@@ -3,7 +3,7 @@ entries:
   quakewatch:
   - apiVersion: v2
     appVersion: latest
-    created: "2025-10-03T21:59:09.8532257+03:00"
+    created: "2025-10-03T22:02:11.9986811+03:00"
     description: A Helm chart for Kubernetes
     digest: 2f765fa0f5c9890e8358d8deb6e6b2c6b87758659395a9570a4215d467a02fa2
     name: quakewatch
@@ -11,4 +11,4 @@ entries:
     urls:
     - https://LiorEilender.github.io/MandatoryProject/quakewatch-0.1.0.tgz
     version: 0.1.0
-generated: "2025-10-03T21:59:09.8348404+03:00"
+generated: "2025-10-03T22:02:11.9866579+03:00"
