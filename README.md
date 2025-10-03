@@ -21,3 +21,6 @@ minikube service quakewatch-svc --url
 
 ## Image
 - Docker Hub: docker.io/liore007/quakewatch (tags: latest, <commit-sha>)
+
+## Health
+GET /healthz
