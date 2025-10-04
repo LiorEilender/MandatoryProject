@@ -1,64 +1,44 @@
-﻿import os, requests
-from datetime import datetime, timezone
-from flask import Flask, render_template_string
-from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
-APP_TITLE = os.getenv("APP_TITLE", "QuakeWatch")
-API_URL = os.getenv("API_URL", "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson")
-
-REQS = Counter("http_requests_total", "HTTP Requests", ["path"])
+﻿from flask import Flask, Response
+import os, time, requests
+from datetime import datetime
+from prometheus_client import Counter, Summary, generate_latest, CONTENT_TYPE_LATEST
 
 app = Flask(__name__)
+REQ = Counter("http_requests_total", "HTTP requests total", ["path"])
+LAT = Summary("request_latency_seconds", "Request latency")
 
-TEMPLATE = """<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{{title}}</title>
-<style>body{font-family:Arial;margin:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:8px}th{background:#f4f4f4;text-align:left}</style>
-</head><body>
-<h1>{{title}}</h1>
-<p>Source: {{api_url}}</p>
-{% if items %}
-<table><thead><tr><th>Time (UTC)</th><th>Mag</th><th>Place</th></tr></thead><tbody>
-{% for it in items %}
-<tr><td>{{it.time}}</td><td>{{it.mag}}</td><td>{{it.place}}</td></tr>
-{% endfor %}
-</tbody></table>
-{% else %}
-<p>No recent data (or API unavailable).</p>
-{% endif %}
-</body></html>"""
+FEED = os.getenv("API_URL", "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson")
+TITLE = os.getenv("APP_TITLE", "QuakeWatch")
 
-def fetch_quakes():
-    try:
-        r = requests.get(API_URL, timeout=2)
-        r.raise_for_status()
-        data = r.json()
-        feats = data.get("features", [])[:20]
-        items = []
-        for f in feats:
-            props = f.get("properties", {})
-            ts = props.get("time")
-            tstr = ""
-            if isinstance(ts, (int, float)):
-                dt = datetime.fromtimestamp(ts/1000, tz=timezone.utc)
-                tstr = dt.strftime("%Y-%m-%d %H:%M:%S")
-            items.append({"mag": props.get("mag"), "place": props.get("place",""), "time": tstr})
-        return items
-    except Exception:
-        return []
+@app.before_request
+def _before():
+    from flask import request
+    REQ.labels(request.path).inc()
 
 @app.route("/")
 def index():
-    REQS.labels(path="/").inc()
-    items = fetch_quakes()
-    return render_template_string(TEMPLATE, title=APP_TITLE, api_url=API_URL, items=items), 200
-
-@app.route("/healthz")
-def healthz():
-    REQS.labels(path="/healthz").inc()
-    return "ok", 200
+    start = time.time()
+    try:
+        data = requests.get(FEED, timeout=5).json()
+        rows = []
+        for f in data.get("features", [])[:10]:
+            p = f.get("properties", {})
+            t = datetime.utcfromtimestamp(p.get("time", 0)/1000).strftime("%Y-%m-%d %H:%M:%S")
+            rows.append((t, p.get("mag"), p.get("place")))
+        body = "\n".join([f"<tr><td>{t}</td><td>{mag}</td><td>{place}</td></tr>" for t,mag,place in rows])
+        html = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{TITLE}</title>
+<style>body{{font-family:Arial;margin:20px}}table{{border-collapse:collapse;width:100%}}th,td{{border:1px solid #ddd;padding:8px}}th{{background:#f4f4f4;text-align:left}}</style>
+</head><body><h1>{TITLE}</h1><p>Source: {FEED}</p>
+<table><thead><tr><th>Time (UTC)</th><th>Mag</th><th>Place</th></tr></thead><tbody>
+{body}
+</tbody></table></body></html>"""
+        return html
+    finally:
+        LAT.observe(time.time() - start)
 
 @app.route("/metrics")
 def metrics():
-    REQS.labels(path="/metrics").inc()
-    return generate_latest(), 200, {"Content-Type": CONTENT_TYPE_LATEST}
+    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
