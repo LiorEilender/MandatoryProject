@@ -8,8 +8,8 @@ python app.py
 # http://127.0.0.1:5000
 
 ## Docker
-docker build -t liore007/quakewatch:latest .
-docker run -p 5000:5000 liore007/quakewatch:latest
+docker build -t liore1/quakewatch:latest .
+docker run -p 5000:5000 liore1/quakewatch:latest
 
 ## Docker Compose
 docker compose up --build
@@ -20,7 +20,7 @@ kubectl apply -f k8s/
 minikube service quakewatch-svc --url
 
 ## Image
-- Docker Hub: docker.io/liore007/quakewatch (tags: latest, <commit-sha>)
+- Docker Hub: docker.io/liore1/quakewatch (tags: latest, <commit-sha>)
 
 <<<<<<< HEAD
 ## Service Health

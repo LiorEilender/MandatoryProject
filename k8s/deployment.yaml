@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: quakewatch
-          image: liore007/quakewatch:latest
+          image: liore1/quakewatch:latest
           ports:
             - containerPort: 5000
           envFrom:
