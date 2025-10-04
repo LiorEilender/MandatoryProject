@@ -1,0 +1,18 @@
+﻿apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: quakewatch-servicemonitor
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  namespaceSelector:
+    matchNames: ["default"]
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: quakewatch-argocd
+      app.kubernetes.io/name: quakewatch
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s

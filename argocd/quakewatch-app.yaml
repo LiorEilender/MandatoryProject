@@ -1,0 +1,34 @@
+﻿apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: quakewatch-argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://LiorEilender.github.io/MandatoryProject
+    chart: quakewatch
+    targetRevision: 0.1.0
+    helm:
+      parameters:
+      - name: fullnameOverride
+        value: quakewatch-argocd
+      - name: service.type
+        value: NodePort
+      - name: service.port
+        value: "5000"
+      - name: service.nodePort
+        value: "30086"
+      - name: image.repository
+        value: liore1/quakewatch
+      - name: image.tag
+        value: latest
+      - name: image.pullPolicy
+        value: Always
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

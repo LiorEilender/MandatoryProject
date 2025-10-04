@@ -1,0 +1,25 @@
+﻿apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: quakewatch-rules
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+  - name: quakewatch.rules
+    rules:
+    - alert: QuakeWatchHighTraffic
+      expr: sum(rate(http_requests_total{service="quakewatch-argocd"}[1m])) > 2
+      for: 2m
+      labels: {severity: warning}
+      annotations:
+        summary: "High traffic on QuakeWatch"
+        description: "RPS > 2 for 2 minutes"
+    - alert: QuakeWatchDown
+      expr: absent(up{service="quakewatch-argocd"} == 1)
+      for: 1m
+      labels: {severity: critical}
+      annotations:
+        summary: "QuakeWatch down"
+        description: "No up() samples for 1 minute"
