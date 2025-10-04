@@ -1,12 +1,17 @@
 ﻿# Monitoring (Prometheus & Grafana)
 
-**Targets:** ServiceMonitor אוסף את `http://:5000/metrics` → הtargets במצב **UP**.  
-**Alerts:**
-- `QuakeWatchHighTraffic`  `sum(rate(http_requests_total{service="quakewatch-argocd"}[1m])) > 2` למשך 2 דקות (warning)
-- `QuakeWatchDown`  `absent(up{service="quakewatch-argocd"} == 1)` למשך דקה (critical)
-
 ## Screenshots
-- ArgoCD: ![ArgoCD](img/argocd-synced-healthy.png)
-- Prometheus Targets: ![Prometheus Targets](img/prometheus-targets-up.png)
-- Grafana RPS: ![Grafana RPS](img/grafana-rps.png)
-- (Optional) Alerts: ![Alerts](img/alerts-firing.png)
+
+- **ArgoCD**
+  - ![ArgoCD](img/ArgoCD.png)
+  - ![ArgoCD  App Tree](img/ArgoCD01.png)
+
+- **Prometheus Targets**
+  - ![Prometheus Targets UP](img/PROMETHEUS.UP.01.png)
+  - ![ServiceMonitor quakewatch](img/PROMETHEUS.UP.ARGOCD.png)
+
+- **Grafana  Requests per second (RPS)**
+  - ![QuakeWatch RPS 1](img/QuakeWatch01.png)
+  - ![QuakeWatch RPS 2](img/QuakeWatch02.png)
+  - ![QuakeWatch RPS 3](img/QuakeWatch03.png)
+  - ![QuakeWatch RPS 4](img/QuakeWatch04.png)
