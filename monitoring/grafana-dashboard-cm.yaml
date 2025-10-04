@@ -1,0 +1,27 @@
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-quakewatch
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  quakewatch.json: |
+    {
+      "title": "QuakeWatch Overview",
+      "schemaVersion": 39,
+      "version": 1,
+      "panels": [
+        {
+          "type": "timeseries",
+          "title": "Requests per second by path",
+          "datasource": "Prometheus",
+          "targets": [
+            { "expr": "sum by (path)(rate(http_requests_total[5m]))" }
+          ],
+          "fieldConfig": { "defaults": { "unit": "req/s" }, "overrides": [] },
+          "gridPos": { "h": 9, "w": 24, "x": 0, "y": 0 }
+        }
+      ],
+      "time": { "from": "now-1h", "to": "now" }
+    }
