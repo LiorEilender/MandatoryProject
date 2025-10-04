@@ -29,3 +29,5 @@ GET /Service Healthz
 ## Health
 GET /healthz
 >>>>>>> origin/main
+
+- [Monitoring & Dashboards](docs/MONITORING.md)
