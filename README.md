@@ -1,4 +1,4 @@
-# QuakeWatch
+﻿# QuakeWatch
 
 ## Run locally (venv)
 python -m venv venv
@@ -20,14 +20,9 @@ kubectl apply -f k8s/
 minikube service quakewatch-svc --url
 
 ## Image
-- Docker Hub: docker.io/liore1/quakewatch (tags: latest, <commit-sha>)
+- Docker Hub: https://hub.docker.com/r/liore1/quakewatch  (tags: latest, <commit-sha>)
 
-<<<<<<< HEAD
-## Service Health
-GET /Service Healthz
-=======
 ## Health
 GET /healthz
->>>>>>> origin/main
 
 - [Monitoring & Dashboards](docs/MONITORING.md)
